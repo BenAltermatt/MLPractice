@@ -1,3 +1,5 @@
+import random
+
 class Node: # This is a single 'neuron'
         # Default activation function
         def default_activation(self, x):
