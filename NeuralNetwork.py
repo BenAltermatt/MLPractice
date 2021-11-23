@@ -6,15 +6,16 @@ class NeuralNetwork: # a neural network made of nodes
 
     # finds the number of input and output values and
     # whether the inputs should be normalized  between 0 and 1
-    def __init__(self, num_inputs=1, num_outputs=1, normalize=False):
+    def __init__(self, num_inputs=1, num_outputs=1, normalize=False, output_func=None):
         self.__num_inputs = num_inputs
         self.__num_outputs = num_outputs
         self.__normalize = normalize
         self.__layers = list()
+        self.__output_func = output_func
         self.add_output()
 
     # create an output_layer
-    def add_output(self, activation_function=None):
+    def add_output(self):
         final_layer = list()
         # we need to know the number of inputs
         # for the input node
@@ -24,8 +25,8 @@ class NeuralNetwork: # a neural network made of nodes
             num_inputs = len(self.__layers[-1])
         
         for x in range(self.__num_outputs):
-            if activation_function is not None:
-                final_layer.append(Node(num_inputs, active_func=activation_function))
+            if self.__output_func is not None:
+                final_layer.append(Node(num_inputs, active_func=self.__output_func))
             else:
                 final_layer.append(Node(num_inputs))
 

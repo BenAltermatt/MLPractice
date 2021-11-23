@@ -2,7 +2,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 from NeuralNetwork import NeuralNetwork
 
-network = NeuralNetwork(num_inputs=2, normalize=True)
+def binary_func(x):
+    return 1 if x >= .5 else 0
+
+network = NeuralNetwork(num_inputs=2, normalize=True, output_func=binary_func)
 network.add_layer(2)
 network.add_layer(4)
 
@@ -41,9 +44,6 @@ def plot_circle(x_c,y_c,r):
                 
     plt.axis([0, 1, 0, 1])
     plt.show()
-
-def binary_func(x):
-    return 1 if x >= .5 else 0
 
 def main():
     plot_circle(.5, .5, .5)
