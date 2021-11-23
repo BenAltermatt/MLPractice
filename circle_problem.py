@@ -1,5 +1,10 @@
 import matplotlib.pyplot as plt
 import numpy as np
+from NeuralNetwork import NeuralNetwork
+
+network = NeuralNetwork(num_inputs=2, normalize=True)
+network.add_layer(2)
+network.add_layer(4)
 
 def generate_points(x_s, y_s, w, h, i):
     points = list()
@@ -11,21 +16,34 @@ def generate_points(x_s, y_s, w, h, i):
 
 def plot_circle(x_c,y_c,r):
     points = generate_points(x_c - r, y_c - r, r * 2, r * 2, .025)
-    for point in points:        
-        if((point[0] - x_c)**2 + (point[1] - y_c)**2 < r**2):
-            plt.plot(point[0], point[1], 'ro')
-        else:
-            plt.plot(point[0], point[1], 'bo')
-        
     
+    solutions = network.calculate_all(points)
+    accuracy = 0.0
+    # calculate using the NN and compare it to accurate
+    for x in range(len(points)):       
+        print(solutions[x][0])
+
+        if solutions[x][0] > .5 and (points[x][0] - x_c)**2 + (points[x][1] - y_c)**2 < r**2:
+            accuracy += 1
+        if solutions[x][0] <=.5 and (points[x][0] - x_c)**2 + (points[x][1] - y_c)**2 >= r**2:
+            accuracy += 1
+
+        if((points[x][0] - x_c)**2 + (points[x][1] - y_c)**2 < r**2):
+            if solutions[x][0] > .5:
+                plt.plot(points[x][0], points[x][1], 'o', color='orange')
+            else:
+                plt.plot(points[x][0], points[x][1], 'ro')
+        else:
+            if solutions[x][0] > .5:
+                plt.plot(points[x][0], points[x][1], 'go')
+            else:
+                plt.plot(points[x][0], points[x][1], 'bo')
+                
     plt.axis([0, 1, 0, 1])
     plt.show()
-    """
-    plt.plot(.5, .5, 'ro')
-    plt.plot(.6,.5,'bo')
-    plt.axis([0, 1, 0, 1])
-    plt.show()
-    """
+
+def binary_func(x):
+    return 1 if x >= .5 else 0
 
 def main():
     plot_circle(.5, .5, .5)

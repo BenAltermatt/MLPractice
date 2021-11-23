@@ -1,9 +1,10 @@
 import random
+import math
 
 class Node: # This is a single 'neuron'
         # Default activation function
-        def default_activation(self, x):
-            return 1 if x >= .5 else 0
+        def default_activation(x):
+            return 1 / (1 + math.exp(-x))
 
         # Makes a node with an input number of weights
         # or a passed array of weights

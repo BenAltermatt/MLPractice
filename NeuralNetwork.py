@@ -11,7 +11,7 @@ class NeuralNetwork: # a neural network made of nodes
         self.__num_outputs = num_outputs
         self.__normalize = normalize
         self.__layers = list()
-        self.__output_layer = self.add_output()
+        self.add_output()
 
     # create an output_layer
     def add_output(self, activation_function=None):
@@ -28,8 +28,8 @@ class NeuralNetwork: # a neural network made of nodes
                 final_layer.append(Node(num_inputs, active_func=activation_function))
             else:
                 final_layer.append(Node(num_inputs))
-            
-        return final_layer
+
+        self.__output_layer = final_layer
 
     # adds a layer of n specified nodes at the designated index
     # with a specified activation functiopn
@@ -68,9 +68,74 @@ class NeuralNetwork: # a neural network made of nodes
             for y in self.__layers[x]:
                 retStr += str(y) + "\n"
             retStr += "========\n"
+        # now add the output layer
+        retStr += "\nOutput Layer\n========\n"
+        for x in self.__output_layer:
+            retStr += str(x)
+        retStr += "\n========\n"
         return retStr
 
-testNet = NeuralNetwork(2, 1)
-testNet.add_layer(3)
-testNet.add_layer(4)
-print(testNet)
+    # calculate by running through the algorithm
+    def calculate(self, inputs):
+        outputs = inputs
+        ins = None
+        for x in self.__layers: # for each layer of nodes
+            ins = outputs
+            outputs = []
+            for y in x: # each node in the layer
+                outputs.append(y.calculate(ins))
+
+        # go through the last layer
+        final_outs = []
+        for x in self.__output_layer:
+            final_outs.append(x.calculate(outputs))
+        
+        return tuple(final_outs)
+
+    # finds the max values for every part of a state
+    # tecnically every component of an input vector
+    def find_max(self, vals):
+        maxs = list(vals[0])
+
+        for x in vals:
+            for y in range(len(x)):
+                maxs[y] = max(maxs[y], x[y])
+        
+        return maxs
+    
+    # finds the min values for every part of a state
+    # technically every component of an input vector
+    def find_min(self, vals):
+        mins = list(vals[0])
+        for x in vals:
+            for y in range(len(x)):
+                mins[y] = min(mins[y], x[y])
+
+        return mins
+
+    # Will find the values that are the min and maxs
+    # and normalize them to the range 0 < x < 1
+    def normalize(self, values):
+        maxs = self.find_max(values)
+        mins = self.find_min(values)
+
+        new_inputs = list()
+        for x in values:
+            new_input = list()
+            for y in range(len(x)):
+                new_input.append((x[y] - mins[y]) / (maxs[y] - mins[y]))
+            new_inputs.append(new_input)
+        
+        return new_inputs
+
+    # calculate for all inputs
+    def calculate_all(self, inputs):
+        ret_vals = list()
+
+        if self.__normalize is True:
+            inputs = self.normalize(inputs)
+
+        for x in inputs:
+            ret_vals.append(self.calculate(x))
+        
+        return tuple(ret_vals)
