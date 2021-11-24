@@ -176,5 +176,5 @@ def lam(error):
     else:
         return .05
 
-read_coords('testing_vals')
+read_coords('Old_AI/HillClimb/testing_vals')
 hill_climb('4_1', 10, 1000)
