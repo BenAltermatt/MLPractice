@@ -109,6 +109,7 @@ def hill_climb(net_name, epsilon, messup_tol):
         if net_name == '4_1': # This checks the structure of the specific network you are using
             w = gen_brain_4_1(-1, 1, -1, 1, 0, 5, .5, .5)
             pre_err = test_brain(w, net_4_1)
+            # something that cuts through a single edge of a circle
             while pre_err >= 3504:
                 w = gen_brain_4_1(-1, 1, -1, 1, 0, 5, .5, .5)
                 pre_err = test_brain(w, net_4_1)

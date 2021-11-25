@@ -20,13 +20,21 @@ import random
 import copy
 from heapq import heappush, heappop
 
-# It's a perceptron, ya dingus
 def perceptron(A, w, b, x):
     dot = 0
     for i in range(len(w)):
         dot += w[i] * x[i]
     return A(dot + b)
 
+"""
+This performs the calculation that a perceptron would perform from 
+if it had:
+    Activation function - A
+    Weight vector       - w
+    Bias value          - b
+    Sigmoid coefficient - k
+    Input vector        - x
+"""
 def new_percep (A, w, b, k, x):
     dot = 0
     for i in range(len(w)):
@@ -204,6 +212,14 @@ def threshold_step(x, threshold):
         return 0
 
 # This essentially will take tuples of different values corresponding to different perceptrons and output the output of the network
+"""
+This actually shows a lot about how I modeled these perceptrons.
+
+You can see here that I used 5 in my model. the 0 1 2 and 3 were in the hidden
+layer, which is why they only had two weights (connecting them and the input x and y coords).
+
+There is a better way to do this, I think.
+"""
 def run_circ_brain(weights, b_vals, k_val, threshold, input):
     # First layer
     percep_0 = new_percep(sigmoid, [weights[0], weights[1]], b_vals[0], k_val, [input[0], input[1]])
@@ -222,23 +238,54 @@ def is_in_circ(x, y):
     return 1 > (x * x + y * y)
 
 # Creates the first generation of brains
+"""
+I called networks 'brains' in high school, I guess. 
+What they _really_ were was tuples that represented 12 weights
+and 5 bias values.
+
+Thats cuz my network looked something liked
+
+        p1
+xin     p2      p5
+        p3
+yin     p4
+
+where there were edges or "weights" between the inputs
+and each middle layer perceptron, and then each 
+perceptron in the middle layer and last perceptron
+"""
 def gen_first_gen():
     brains = list()
+    # list of layers
 
+    # for 20 layers
     for x in range(20):
         weights = list()
+        # make a list of 12 weights (what)
         for x in range(12):
             weights.append(1)
 
+        # make a list of 5 biases (huh)
         b_vals = list()
         for x in range(5):
             b_vals.append(0)
 
+        # I made these in to tuples because you can hash them
+        # they are actually based and redpilled
         brains.append((tuple(weights), tuple(b_vals)))
 
     return tuple(brains)
 
 # Generates a mutated generation from the best half of the old gen
+"""
+This is what I used to approximate the idea of 
+some kind of machine learning aglorithm before I knew
+anything about gradient descent.
+
+I selected the best of the old generation,
+and randomly altered the values by some specified
+range that depended on how accurate I already was.
+"""
 def gen_new(old, mut_mag, mut_num):
     new_gen = list()
 
